@@ -1,46 +1,34 @@
 package com.example.iotapp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkRequest;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.StrictMode;
-import android.provider.Settings;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
-import com.example.iotapp.Manager.ModuleDataManager;
+import com.example.iotapp.Manager.DeviceManager;
+import com.example.iotapp.Model.AccountResponse;
 
 public class MainActivity extends AppCompatActivity {
 
-    // creating constant keys for shared preferences.
     public static final String SHARED_PREFS = "shared_prefs";
+    public static final String AUTHENTICATION_TOKEN = "authentication_token";
 
-    // key for storing email.
-    public static final String EMAIL_KEY = "email_key";
-
-    // key for storing password.
-    public static final String PASSWORD_KEY = "password_key";
-
-    private ModuleDataManager moduleDataManager;
-
-    // variable for shared preferences.
     SharedPreferences sharedpreferences;
-    String email;
+    String token;
 
-    boolean isSwitchOn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,119 +36,104 @@ public class MainActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
-        Button ledButton = (Button) findViewById(R.id.button1);
-        ImageView ledImage = (ImageView) findViewById(R.id.led);
-        isSwitchOn = false;
-        ledButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View view) {
-                if (!isSwitchOn) {
-                    ledButton.setText("Turn On");
-                    ledButton.setTextColor(Color.parseColor("white"));
-                    ledButton.setBackgroundColor(Color.parseColor("#36BD31"));
-                    ledImage.setImageResource(R.mipmap.ledoff);
-                    isSwitchOn=true;
-                }else{
-                    ledButton.setText("Turn Off");
-                    ledButton.setTextColor(Color.parseColor("white"));
-                    ledButton.setBackgroundColor(Color.parseColor("red"));
-                    ledImage.setImageResource(R.mipmap.ledon);
-                    isSwitchOn=false;
-                }
-            }
-        });
 
-        Button wifiButton = (Button) findViewById(R.id.button2);
-        wifiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-                startActivity(intent);
-            }
-        });
-
-        Button nextButton = (Button) findViewById(R.id.button3);
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConnectivityManager connectivityManager = (ConnectivityManager)
-                        getSystemService(Context.CONNECTIVITY_SERVICE);
-
-                NetworkRequest.Builder builder = new NetworkRequest.Builder();
-
-                connectivityManager.registerNetworkCallback(builder.build(),
-                        new ConnectivityManager.NetworkCallback() {
-                            @Override
-                            public void onAvailable(Network network) {
-                                //Do your work here or restart your activity
-
-                            }
-                            @Override
-                            public void onLost(Network network) {
-                                //internet lost
-                            }
-                        });
-            }
-        });
-
-        // initializing our shared preferences.
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        token = sharedpreferences.getString(AUTHENTICATION_TOKEN, null);
 
-        // getting data from shared prefs and
-        // storing it in our string variable.
-        email = sharedpreferences.getString(EMAIL_KEY, null);
+        SetLogoutButton();
+        SetRefreshButton();
+        SetUserData();
+    }
 
-        // initializing our textview and button.
-        TextView welcomeTV = findViewById(R.id.hello);
-        welcomeTV.setText("Welcome " + email + "!");
+    private void SetUserData()
+    {
+        DeviceManager dm = new DeviceManager();
+        try {
+            AccountResponse user = dm.GetUserData(token);
+            TableLayout table = findViewById(R.id.tableLayout);
+
+            TextView helloText = findViewById(R.id.hello);
+            helloText.setText("Hello " + user.username + "!");
+
+            if(user.userDevices.size() > 0)
+            for(int i = 0;i<user.userDevices.size();i++)
+            {
+                // Row
+                TableRow row = new TableRow(this);
+                row.setDividerPadding(5);
+                row.setGravity(Gravity.CLIP_HORIZONTAL | Gravity.CENTER_VERTICAL);
+                row.setBackground(ContextCompat.getDrawable(this, R.drawable.back));
+                Integer id = user.userDevices.get(i).id;
+                row.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in = new Intent(MainActivity.this, DeviceActivity.class);
+                        in.putExtra("deviceId", id);
+                        startActivity(in);
+                        finish();
+                    }
+                });
+
+                // Name
+                TextView textName = new TextView(this);
+                textName.setText(String.valueOf(user.userDevices.get(i).id) + " - " + user.userDevices.get(i).name);
+
+                // Image
+                ImageView img = new ImageView(this);
+                img.setImageResource(R.mipmap.device);
+
+                row.addView(img);
+                row.addView(textName);
+                table.addView(row,1);
+            }
+            else
+            {
+                // Row
+                TableRow row = new TableRow(this);
+                row.setDividerPadding(5);
+                row.setGravity(Gravity.CENTER_HORIZONTAL);
+                row.setBackground(ContextCompat.getDrawable(this, R.drawable.back));
+
+                // Name
+                TextView textInfo = new TextView(this);
+                textInfo.setText("No connected devices");
+                textInfo.setTextColor(Color.RED);
+
+                row.addView(textInfo);
+                table.addView(row,1);
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void SetRefreshButton()
+    {
+        TextView refreshText = findViewById(R.id.refresh);
+        refreshText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                startActivity(getIntent());
+            }
+        });
+    }
+
+    private void SetLogoutButton()
+    {
         Button logoutBtn = findViewById(R.id.logoutButton);
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // calling method to edit values in shared prefs.
                 SharedPreferences.Editor editor = sharedpreferences.edit();
-
-                // below line will clear
-                // the data in shared prefs.
                 editor.clear();
-
-                // off handlers
-                mHandler.removeCallbacks(runnableCode);
-
-                // below line will apply empty
-                // data to shared prefs.
                 editor.apply();
 
-                // starting mainactivity after
-                // clearing values in shared preferences.
                 Intent i = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(i);
                 finish();
             }
         });
-
-        StrictMode.ThreadPolicy gfgPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(gfgPolicy);
-        moduleDataManager = new ModuleDataManager();
-        TextView light = findViewById(R.id.light);
-        mHandler = new Handler();
-        mHandler.post(runnableCode);
     }
-    private Handler mHandler;
-
-    private Runnable runnableCode = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                Integer i = moduleDataManager.GetLastData().dataInt;
-                TextView light = findViewById(R.id.light);
-                light.setText("Resistor val: " + i.toString());
-                mHandler.postDelayed(runnableCode, 1000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 }

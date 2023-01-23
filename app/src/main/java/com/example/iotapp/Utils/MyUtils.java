@@ -1,22 +1,43 @@
 package com.example.iotapp.Utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Scanner;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 
 public class MyUtils {
-    public static String GetJsonFromUrl(URL url) throws IOException {
-        String inline = "";
-        Scanner scanner = new Scanner(url.openStream());
+    public static String GetBody(HttpURLConnection request) throws IOException {
 
-        //Write all the JSON data into a string using a scanner
-        while (scanner.hasNext()) {
-            inline += scanner.nextLine();
+        String body = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader bufferedReader = null;
+
+        try {
+            InputStream inputStream = request.getInputStream();
+            if (inputStream != null) {
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                char[] charBuffer = new char[128];
+                int bytesRead = -1;
+                while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+                    stringBuilder.append(charBuffer, 0, bytesRead);
+                }
+            } else {
+                stringBuilder.append("");
+            }
+        } catch (IOException ex) {
+            throw ex;
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    throw ex;
+                }
+            }
         }
 
-        //Close the scanner
-        scanner.close();
-
-        return inline;
+        body = stringBuilder.toString();
+        return body;
     }
 }

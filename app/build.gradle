@@ -28,6 +28,8 @@ android {
         it.buildConfigField('String', 'API_DATA', API_DATA)
         it.buildConfigField('String', 'API_SIGN_IN', API_SIGN_IN)
         it.buildConfigField('String', 'API_SIGN_UP', API_SIGN_UP)
+        it.buildConfigField('String', 'API_DEVICES', API_DEVICES)
+        it.buildConfigField('String', 'API_USER_DATA', API_USER_DATA)
     }
 
     compileOptions {

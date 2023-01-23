@@ -2,10 +2,10 @@ package com.example.iotapp.Model;
 
 import java.util.List;
 
-public class AccountResponse {
+public class AccountResponse extends BasicResponse {
+    public Integer id;
     public String username;
     public String email;
-    public String password;
     public String token;
-    public List<DeviceResponse> devices;
+    public List<DeviceResponse> userDevices;
 }
