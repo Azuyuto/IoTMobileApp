@@ -71,8 +71,6 @@ public class NewDeviceActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mHandler.removeCallbacks(runnableCode); // off handler
-
                 String name = ((TextView)findViewById(R.id.nameText)).getText().toString();
                 String guid = ((TextView)findViewById(R.id.guidText)).getText().toString();
 
@@ -86,6 +84,7 @@ public class NewDeviceActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    mHandler.removeCallbacks(runnableCode); // off handler
                     try {
                         DeviceManager dm = new DeviceManager();
                         String message = dm.AddDevice(token, name, guid);
