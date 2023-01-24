@@ -1,5 +1,6 @@
 package com.example.iotapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,6 +28,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class DeviceActivity extends AppCompatActivity {
     public static final String SHARED_PREFS = "shared_prefs";
@@ -44,7 +46,7 @@ public class DeviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_device);
 
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
@@ -98,6 +100,7 @@ public class DeviceActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void SetDeviceData()
     {
         try {
@@ -124,7 +127,7 @@ public class DeviceActivity extends AppCompatActivity {
                     // Data
                     TextView textDate = new TextView(this);
                     Date expiry = new Date(data.get(i).epochDate * 1000);
-                    DateFormat df = new SimpleDateFormat("HH:mm:ss");
+                    @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("HH:mm:ss");
                     textDate.setText(df.format(expiry));
                     textDate.setBackground(ContextCompat.getDrawable(this, R.drawable.back));
                     textDate.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -173,7 +176,7 @@ public class DeviceActivity extends AppCompatActivity {
         mHandler.post(runnableCode);
     }
 
-    private Runnable runnableCode = new Runnable() {
+    private final Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
             try {

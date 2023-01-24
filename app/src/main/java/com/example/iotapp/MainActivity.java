@@ -1,5 +1,6 @@
 package com.example.iotapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +22,8 @@ import androidx.core.content.ContextCompat;
 import com.example.iotapp.Manager.DeviceManager;
 import com.example.iotapp.Model.AccountResponse;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "shared_prefs";
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_main);
 
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         SetNewDevice();
     }
 
+    @SuppressLint("SetTextI18n")
     private void SetUserData()
     {
         DeviceManager dm = new DeviceManager();

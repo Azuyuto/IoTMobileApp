@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.iotapp.Manager.AccountManager;
 import com.example.iotapp.Model.AccountResponse;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "shared_prefs";
@@ -31,16 +33,22 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_login);
-
-        EditText usernameEdt = findViewById(R.id.usernameText);
-        EditText passwordEdt = findViewById(R.id.passwordText);
-        Button loginBtn = findViewById(R.id.signInButton);
 
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         token = sharedpreferences.getString(AUTHENTICATION_TOKEN, null);
+
+        SetLoginButton();
+        SetSignUpButton();
+    }
+
+    private void SetLoginButton()
+    {
         findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+        EditText usernameEdt = findViewById(R.id.usernameText);
+        EditText passwordEdt = findViewById(R.id.passwordText);
+        Button loginBtn = findViewById(R.id.signInButton);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +79,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    private void SetSignUpButton()
+    {
         TextView signUpText = findViewById(R.id.signUpText);
         signUpText.setOnClickListener(new View.OnClickListener(){
             @Override

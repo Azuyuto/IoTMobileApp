@@ -1,6 +1,7 @@
 package com.example.iotapp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,8 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.iotapp.Manager.DeviceManager;
 
+import java.util.Objects;
+
 public class NewDeviceActivity extends AppCompatActivity {
-    public static final String SSID = "\"IOT\"";
     public static final String WEBSITE_URL = "http://192.168.10.1";
     public static final String SHARED_PREFS = "shared_prefs";
     public static final String AUTHENTICATION_TOKEN = "authentication_token";
@@ -40,7 +42,7 @@ public class NewDeviceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_new_device);
 
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
@@ -54,7 +56,7 @@ public class NewDeviceActivity extends AppCompatActivity {
         SetSubmitButton();
     }
 
-    private ActivityResultLauncher<String> requestPermissionLauncher =
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
 
@@ -153,6 +155,7 @@ public class NewDeviceActivity extends AppCompatActivity {
         mHandler.post(runnableCode);
     }
 
+    @SuppressLint("SetTextI18n")
     private void CheckWifiSSID()
     {
         TextView statusText = findViewById(R.id.step1status);
@@ -164,7 +167,7 @@ public class NewDeviceActivity extends AppCompatActivity {
         statusText.setText("Current SSID: " + ssid);
     }
 
-    private Runnable runnableCode = new Runnable() {
+    private final Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
             try {

@@ -39,8 +39,7 @@ public class DeviceManager {
             throw new RuntimeException("HttpResponseCode: " + responseCode);
         } else {
             Gson gson = new Gson();
-            AccountResponse data = gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
-            return data;
+            return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
         }
     }
 
@@ -60,11 +59,9 @@ public class DeviceManager {
             throw new RuntimeException("HttpResponseCode: " + responseCode);
         } else {
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<DataResponse>>() {
-            }.getType();
-            List<DataResponse> data = gson.fromJson(MyUtils.GetBody(http), listType);
+            Type listType = new TypeToken<ArrayList<DataResponse>>() { }.getType();
 
-            return data;
+            return gson.fromJson(MyUtils.GetBody(http), listType);
         }
     }
 

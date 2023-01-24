@@ -28,7 +28,7 @@ public class AccountManager {
         URL url = new URL(BuildConfig.API_URL + BuildConfig.API_SIGN_IN);
         URLConnection conn = url.openConnection();
         HttpURLConnection http = (HttpURLConnection)conn;
-        http.setRequestMethod("POST"); // PUT is another valid option
+        http.setRequestMethod("POST");
         http.setDoOutput(true);
 
         byte[] out = ("{\"username\":\""+username+"\",\"password\":\""+password+"\"}").getBytes(StandardCharsets.UTF_8);
@@ -46,8 +46,7 @@ public class AccountManager {
             if(400 <= responseCode && responseCode < 500)
             {
                 Gson gson = new Gson();
-                AccountResponse data = gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
-                return data;
+                return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
             }
             else
             {
@@ -56,8 +55,7 @@ public class AccountManager {
         }
         else {
             Gson gson = new Gson();
-            AccountResponse data = gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
-            return data;
+            return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
         }
     }
 
@@ -100,8 +98,7 @@ public class AccountManager {
             if(400 <= responseCode && responseCode < 500)
             {
                 Gson gson = new Gson();
-                AccountResponse data = gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
-                return data;
+                return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
             }
             else
             {
@@ -110,8 +107,7 @@ public class AccountManager {
         }
         else {
             Gson gson = new Gson();
-            AccountResponse data = gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
-            return data;
+            return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
         }
     }
 }
