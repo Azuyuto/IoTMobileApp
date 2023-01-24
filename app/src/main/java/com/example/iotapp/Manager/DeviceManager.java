@@ -4,12 +4,12 @@ import android.os.StrictMode;
 
 import com.example.iotapp.BuildConfig;
 import com.example.iotapp.Model.AccountResponse;
-import com.example.iotapp.Model.DeviceResponse;
-import com.example.iotapp.Model.ModuleDataResponse;
+import com.example.iotapp.Model.DataResponse;
 import com.example.iotapp.Utils.MyUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -43,60 +43,37 @@ public class DeviceManager {
         }
     }
 
-    public List<DeviceResponse> GetUserDevices(String token) throws Exception {
+    public List<DataResponse> GetData(String token, Integer deviceId) throws Exception {
         StrictMode.ThreadPolicy gfgPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(gfgPolicy);
 
-        URL url = new URL(BuildConfig.API_URL + BuildConfig.API_DEVICES);
+        URL url = new URL(BuildConfig.API_URL + BuildConfig.API_DEVICE_DATA);
         URLConnection conn = url.openConnection();
         HttpURLConnection http = (HttpURLConnection)conn;
+        http.setRequestMethod("POST");
         http.setRequestProperty("Authorization","Bearer " + token);
-        conn.setRequestProperty("Content-Type","application/json");
-        http.setRequestMethod("GET");
+
+        String json = "{\"deviceId\":"+deviceId+",\"numberOfLastDataUpdates\":10}";
+        OutputStream os = http.getOutputStream();
+        os.write(json.getBytes());
+        os.flush();
+
         http.connect();
-
-        //Getting the response code
         int responseCode = http.getResponseCode();
-
         if (responseCode != 200) {
             throw new RuntimeException("HttpResponseCode: " + responseCode);
         }
         else {
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<ModuleDataResponse>>(){}.getType();
-            List<DeviceResponse> data = gson.fromJson(MyUtils.GetBody(http), listType);
+            Type listType = new TypeToken<ArrayList<DataResponse>>(){}.getType();
+            List<DataResponse> data = gson.fromJson(MyUtils.GetBody(http), listType);
 
             return data;
         }
     }
 
-    public List<ModuleDataResponse> GetData(Integer deviceId) throws Exception {
-        StrictMode.ThreadPolicy gfgPolicy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(gfgPolicy);
-
-        URL url = new URL(BuildConfig.API_URL + BuildConfig.API_DATA);
-        //url = new URL("https://www.google.pl");
-        URLConnection conn = url.openConnection();
-        HttpURLConnection http = (HttpURLConnection)conn;
-        http.connect();
-
-        //Getting the response code
-        int responseCode = http.getResponseCode();
-
-        if (responseCode != 200) {
-            throw new RuntimeException("HttpResponseCode: " + responseCode);
-        }
-        else {
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<ModuleDataResponse>>(){}.getType();
-            List<ModuleDataResponse> data = gson.fromJson(MyUtils.GetBody(http), listType);
-
-            return data;
-        }
-    }
-
-    public ModuleDataResponse GetLastData(Integer deviceId) throws Exception {
-        List<ModuleDataResponse> list = GetData(deviceId);
+    public DataResponse GetLastData(String token, Integer deviceId) throws Exception {
+        List<DataResponse> list = GetData(token, deviceId);
         return list.get(list.size() - 1);
     }
 }

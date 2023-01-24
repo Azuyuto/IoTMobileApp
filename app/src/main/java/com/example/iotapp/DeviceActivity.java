@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.iotapp.Manager.DeviceManager;
-import com.example.iotapp.Model.ModuleDataResponse;
+import com.example.iotapp.Model.DataResponse;
 
 import java.util.List;
 
@@ -88,7 +88,7 @@ public class DeviceActivity extends AppCompatActivity {
     private void SetDeviceData()
     {
         try {
-            List<ModuleDataResponse> data = deviceManager.GetData(deviceId);
+            List<DataResponse> data = deviceManager.GetData(token, deviceId);
             TableLayout table = findViewById(R.id.dataLayout);
 
             int childCount = table.getChildCount();
