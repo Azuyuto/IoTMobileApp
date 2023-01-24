@@ -43,10 +43,10 @@ public class AccountManager {
 
         int responseCode = http.getResponseCode();
         if (responseCode != 200) {
-            if(responseCode == 401)
+            if(400 <= responseCode && responseCode < 500)
             {
-                AccountResponse data = new AccountResponse();
-                data.message = "Wrong username or password!";
+                Gson gson = new Gson();
+                AccountResponse data = gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
                 return data;
             }
             else
@@ -97,10 +97,10 @@ public class AccountManager {
 
         int responseCode = http.getResponseCode();
         if (responseCode != 200) {
-            if(responseCode == 401)
+            if(400 <= responseCode && responseCode < 500)
             {
-                AccountResponse data = new AccountResponse();
-                data.message = "Wrong username or password!";
+                Gson gson = new Gson();
+                AccountResponse data = gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
                 return data;
             }
             else

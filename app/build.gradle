@@ -30,6 +30,8 @@ android {
         it.buildConfigField('String', 'API_DEVICES', API_DEVICES)
         it.buildConfigField('String', 'API_USER_DATA', API_USER_DATA)
         it.buildConfigField('String', 'API_DEVICE_DATA', API_DEVICE_DATA)
+        it.buildConfigField('String', 'API_DEVICE_ADD', API_DEVICE_ADD)
+        it.buildConfigField('String', 'API_DEVICE_FORGET', API_DEVICE_FORGET)
     }
 
     compileOptions {

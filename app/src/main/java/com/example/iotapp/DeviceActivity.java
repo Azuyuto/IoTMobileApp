@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -21,6 +22,10 @@ import androidx.core.content.ContextCompat;
 import com.example.iotapp.Manager.DeviceManager;
 import com.example.iotapp.Model.DataResponse;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class DeviceActivity extends AppCompatActivity {
@@ -31,7 +36,7 @@ public class DeviceActivity extends AppCompatActivity {
     private Handler mHandler;
 
     SharedPreferences sharedpreferences;
-    String token;
+    String token, name;
     Integer deviceId;
 
     @Override
@@ -46,6 +51,9 @@ public class DeviceActivity extends AppCompatActivity {
         token = sharedpreferences.getString(AUTHENTICATION_TOKEN, null);
         deviceManager = new DeviceManager();
         deviceId = getIntent().getIntExtra("deviceId", 0);
+        name = getIntent().getStringExtra("deviceName");
+        TextView nameText = findViewById(R.id.deviceText);
+        nameText.setText(name);
 
         SetBackButton();
         SetForgotButton();
@@ -70,13 +78,18 @@ public class DeviceActivity extends AppCompatActivity {
 
     private void SetForgotButton()
     {
-        Button forgotBtn = findViewById(R.id.forgotButton);
-        forgotBtn.setOnClickListener(new View.OnClickListener() {
+        Button forgetBtn = findViewById(R.id.forgetButton);
+        forgetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mHandler.removeCallbacks(runnableCode); // off handler
 
-                // TODO: forgot function
+                try {
+                    String message = deviceManager.ForgetDevice(token, deviceId);
+                    Toast.makeText(DeviceActivity.this, message, Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 Intent i = new Intent(DeviceActivity.this, MainActivity.class);
                 startActivity(i);
@@ -98,30 +111,44 @@ public class DeviceActivity extends AppCompatActivity {
             }
 
             if(data.size() > 0)
+            {
+                TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f);
+                params.weight = 1;
                 for(int i = 0;i<data.size();i++)
                 {
                     // Row
                     TableRow row = new TableRow(this);
-                    row.setDividerPadding(5);
-                    row.setGravity(Gravity.CLIP_HORIZONTAL | Gravity.CENTER_VERTICAL);
+                    row.setPadding(20, 20, 20, 20);
                     row.setBackground(ContextCompat.getDrawable(this, R.drawable.back));
 
                     // Data
                     TextView textDate = new TextView(this);
-                    textDate.setText(String.valueOf(data.get(i).id));
+                    Date expiry = new Date(data.get(i).epochDate * 1000);
+                    DateFormat df = new SimpleDateFormat("HH:mm:ss");
+                    textDate.setText(df.format(expiry));
+                    textDate.setBackground(ContextCompat.getDrawable(this, R.drawable.back));
+                    textDate.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    textDate.setLayoutParams(params);
+                    textDate.setPadding(20, 20, 20, 20);
 
                     // Value
                     TextView textValue = new TextView(this);
                     textValue.setText(String.valueOf(data.get(i).dataInt));
+                    textValue.setBackground(ContextCompat.getDrawable(this, R.drawable.back));
+                    textValue.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    textValue.setLayoutParams(params);
+                    textValue.setPadding(20, 20, 20, 20);
 
                     row.addView(textDate);
                     row.addView(textValue);
                     table.addView(row,1);
                 }
+            }
             else
             {
                 // Row
                 TableRow row = new TableRow(this);
+                row.setPadding(20, 20, 20, 20);
                 row.setDividerPadding(5);
                 row.setGravity(Gravity.CENTER_HORIZONTAL);
                 row.setBackground(ContextCompat.getDrawable(this, R.drawable.back));

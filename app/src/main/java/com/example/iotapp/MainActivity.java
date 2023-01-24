@@ -61,15 +61,17 @@ public class MainActivity extends AppCompatActivity {
             {
                 // Row
                 TableRow row = new TableRow(this);
-                row.setDividerPadding(5);
+                row.setPadding(20, 20, 20, 20);
                 row.setGravity(Gravity.CLIP_HORIZONTAL | Gravity.CENTER_VERTICAL);
                 row.setBackground(ContextCompat.getDrawable(this, R.drawable.back));
                 Integer id = user.userDevices.get(i).id;
+                String name = user.userDevices.get(i).name;
                 row.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent in = new Intent(MainActivity.this, DeviceActivity.class);
                         in.putExtra("deviceId", id);
+                        in.putExtra("deviceName", name);
                         startActivity(in);
                         finish();
                     }
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Name
                 TextView textName = new TextView(this);
-                textName.setText(String.valueOf(user.userDevices.get(i).id) + " - " + user.userDevices.get(i).name);
+                textName.setText(user.userDevices.get(i).name);
 
                 // Image
                 ImageView img = new ImageView(this);
