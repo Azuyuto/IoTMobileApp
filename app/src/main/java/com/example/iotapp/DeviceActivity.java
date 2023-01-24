@@ -117,7 +117,7 @@ public class DeviceActivity extends AppCompatActivity {
             {
                 TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f);
                 params.weight = 1;
-                for(int i = 0;i<data.size();i++)
+                for(int i = data.size() - 1;i>=0;i--)
                 {
                     // Row
                     TableRow row = new TableRow(this);
@@ -126,8 +126,8 @@ public class DeviceActivity extends AppCompatActivity {
 
                     // Data
                     TextView textDate = new TextView(this);
-                    Date expiry = new Date(data.get(i).epochDate * 1000);
-                    @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("HH:mm:ss");
+                    Date expiry = new Date(data.get(i).epochDate);
+                    @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd/MM - HH:mm:ss");
                     textDate.setText(df.format(expiry));
                     textDate.setBackground(ContextCompat.getDrawable(this, R.drawable.back));
                     textDate.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
