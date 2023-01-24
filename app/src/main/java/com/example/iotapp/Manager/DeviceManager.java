@@ -68,11 +68,6 @@ public class DeviceManager {
         }
     }
 
-    public DataResponse GetLastData(String token, Integer deviceId) throws Exception {
-        List<DataResponse> list = GetData(token, deviceId);
-        return list.get(list.size() - 1);
-    }
-
     public String AddDevice(String token, String name, String guid) throws IOException {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
