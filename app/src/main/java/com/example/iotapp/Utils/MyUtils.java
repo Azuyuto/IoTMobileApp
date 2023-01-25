@@ -4,17 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 
 public class MyUtils {
-    public static String GetBody(HttpURLConnection request) throws IOException {
-
-        String body = null;
+    public static String GetBody(InputStream inputStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         BufferedReader bufferedReader = null;
 
         try {
-            InputStream inputStream = request.getInputStream();
             if (inputStream != null) {
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 char[] charBuffer = new char[128];
@@ -31,7 +27,6 @@ public class MyUtils {
             }
         }
 
-        body = stringBuilder.toString();
-        return body;
+        return stringBuilder.toString();
     }
 }

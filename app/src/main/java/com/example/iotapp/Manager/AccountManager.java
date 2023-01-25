@@ -46,7 +46,7 @@ public class AccountManager {
             if(400 <= responseCode && responseCode < 500)
             {
                 Gson gson = new Gson();
-                return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
+                return gson.fromJson(MyUtils.GetBody(http.getErrorStream()), AccountResponse.class);
             }
             else
             {
@@ -55,22 +55,15 @@ public class AccountManager {
         }
         else {
             Gson gson = new Gson();
-            return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
+            return gson.fromJson(MyUtils.GetBody(http.getInputStream()), AccountResponse.class);
         }
     }
 
-    public AccountResponse SignUp(String email, String username, String password, String repeatPassword) throws Exception {
-        if(username.isEmpty() || email.isEmpty() || password.isEmpty() || repeatPassword.isEmpty())
+    public AccountResponse SignUp(String email, String username, String password) throws Exception {
+        if(username.isEmpty() || email.isEmpty() || password.isEmpty())
         {
             AccountResponse data = new AccountResponse();
             data.message = "All fields are required";
-            return data;
-        }
-
-        if(!password.equals(repeatPassword))
-        {
-            AccountResponse data = new AccountResponse();
-            data.message = "Passwords must be the same";
             return data;
         }
 
@@ -98,7 +91,8 @@ public class AccountManager {
             if(400 <= responseCode && responseCode < 500)
             {
                 Gson gson = new Gson();
-                return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
+                String json = MyUtils.GetBody(http.getErrorStream());
+                return gson.fromJson(json, AccountResponse.class);
             }
             else
             {
@@ -107,7 +101,7 @@ public class AccountManager {
         }
         else {
             Gson gson = new Gson();
-            return gson.fromJson(MyUtils.GetBody(http), AccountResponse.class);
+            return gson.fromJson(MyUtils.GetBody(http.getInputStream()), AccountResponse.class);
         }
     }
 }

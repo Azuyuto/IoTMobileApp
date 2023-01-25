@@ -29,21 +29,26 @@ public class RegistrationActivity extends AppCompatActivity {
 
         findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
 
+        SetRegistrationButton();
+        SetLoginButton();
+    }
+
+    private void SetRegistrationButton()
+    {
         EditText emailEdt = findViewById(R.id.emailText);
         EditText usernameEdt = findViewById(R.id.usernameText);
         EditText passwordEdt = findViewById(R.id.passwordText);
-        EditText repeatPasswordEdt = findViewById(R.id.repeatPasswordText);
-        Button loginBtn = findViewById(R.id.signUpButton);
+        Button registrationBtn = findViewById(R.id.signUpButton);
 
         findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+        registrationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                 AccountManager am = new AccountManager();
                 try {
-                    AccountResponse ar = am.SignUp(emailEdt.getText().toString(), usernameEdt.getText().toString(), passwordEdt.getText().toString(), repeatPasswordEdt.getText().toString());
+                    AccountResponse ar = am.SignUp(emailEdt.getText().toString(), usernameEdt.getText().toString(), passwordEdt.getText().toString());
                     if(TextUtils.isEmpty(ar.message))
                     {
                         Toast.makeText(RegistrationActivity.this, "Successfully registered!", Toast.LENGTH_SHORT).show();
@@ -63,7 +68,10 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    private void SetLoginButton()
+    {
         TextView signUpText = findViewById(R.id.signInText);
         signUpText.setOnClickListener(new View.OnClickListener(){
             @Override
