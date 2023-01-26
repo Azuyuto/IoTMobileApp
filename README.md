@@ -14,8 +14,8 @@ Lista dostępnych urządzeń
 
 Połączenie nowego urządzenia
 
-![App Screenshot](https://github.com/Azuyuto/IoTMobileApp/blob/master/images/img2.PNG)
+![App Screenshot](https://github.com/Azuyuto/IoTMobileApp/blob/master/images/img3.PNG)
 
 Wczytywanie pomiarów fotorezystora z płytki STM
 
-![App Screenshot](https://github.com/Azuyuto/IoTMobileApp/blob/master/images/img2.PNG)
+![App Screenshot](https://github.com/Azuyuto/IoTMobileApp/blob/master/images/img4.PNG)
